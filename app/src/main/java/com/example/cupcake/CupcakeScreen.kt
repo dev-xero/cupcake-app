@@ -17,7 +17,7 @@ package com.example.cupcake
 
 import android.content.Context
 import android.content.Intent
-import androidx.compose.foundation.layout.Column
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -37,6 +37,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.cupcake.data.DataSource.flavors
 import com.example.cupcake.data.DataSource.quantityOptions
@@ -49,11 +50,11 @@ import com.example.cupcake.ui.StartOrderScreen
  * ENUM Class for the cupcake screen
  * */
 
-enum class CupcakeScreen {
-    Start,
-    Flavor,
-    Pickup,
-    Summary
+enum class CupcakeScreen(@StringRes val title: Int) {
+    Start(title = R.string.app_name),
+    Flavor(title = R.string.flavor),
+    Pickup(title = R.string.choose_pickup_date),
+    Summary(title = R.string.order_summary)
 }
 
 
@@ -64,10 +65,11 @@ enum class CupcakeScreen {
 fun CupcakeAppBar(
     canNavigateBack: Boolean,
     navigateUp: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    currentScreen: CupcakeScreen
 ) {
     TopAppBar(
-        title = { Text(stringResource(id = R.string.app_name)) },
+        title = { Text(stringResource(id = currentScreen.title)) },
         modifier = modifier,
         navigationIcon = {
             if (canNavigateBack) {
@@ -85,16 +87,20 @@ fun CupcakeAppBar(
 @Composable
 fun CupcakeApp(modifier: Modifier = Modifier, viewModel: OrderViewModel = viewModel()){
     val navController: NavHostController = rememberNavController()
+    val backStackEntry by navController.currentBackStackEntryAsState()
+    val currentScreen = CupcakeScreen.valueOf(
+        backStackEntry?.destination?.route ?: CupcakeScreen.Start.name
+    )
 
-    // TODO: Get current back stack entry
 
     // TODO: Get the name of the current screen
 
     Scaffold(
         topBar = {
             CupcakeAppBar(
-                canNavigateBack = false,
-                navigateUp = { /* TODO: implement back navigation */ }
+                canNavigateBack = navController.previousBackStackEntry != null,
+                navigateUp = { navController.navigateUp() },
+                currentScreen = currentScreen
             )
         }
     ) {
