@@ -15,6 +15,8 @@
  */
 package com.example.cupcake
 
+import android.content.Context
+import android.content.Intent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Icon
@@ -137,7 +139,7 @@ fun CupcakeApp(modifier: Modifier = Modifier, viewModel: OrderViewModel = viewMo
             }
 
             // ROUTE: pickup date
-            composable(route = CupcakeScreen.Flavor.name) {
+            composable(route = CupcakeScreen.Pickup.name) {
                 SelectOptionScreen(
                     subtotal = uiState.price,
                     options = uiState.pickupOptions,
@@ -157,6 +159,8 @@ fun CupcakeApp(modifier: Modifier = Modifier, viewModel: OrderViewModel = viewMo
 
             // ROUTE: summary
             composable(route = CupcakeScreen.Summary.name) {
+                val context = LocalContext.current
+
                 OrderSummaryScreen(
                     orderUiState = uiState,
                     onCancelButtonClicked = {
@@ -166,6 +170,7 @@ fun CupcakeApp(modifier: Modifier = Modifier, viewModel: OrderViewModel = viewMo
                     },
                     onSendButtonClicked = {
                         subject: String, summary: String ->
+                        shareOrder(context, subject, summary)
                     }
                 )
             }
@@ -179,5 +184,25 @@ private fun cancelOrderAndNavigateToStart(
 ) {
     viewModel.resetOrder()
     navController.popBackStack(CupcakeScreen.Start.name, inclusive = false)
+}
+
+private fun shareOrder(
+    context: Context,
+    subject: String,
+    summary: String
+) {
+    val intent = Intent(Intent.ACTION_SEND).apply {
+        type = "text/plain"
+        putExtra(Intent.EXTRA_SUBJECT, subject)
+        putExtra(Intent.EXTRA_TEXT, summary)
+    }
+
+    context.startActivity(
+        Intent.createChooser(
+            intent,
+            context.getString(R.string.new_cupcake_order)
+        )
+    )
+
 }
 
