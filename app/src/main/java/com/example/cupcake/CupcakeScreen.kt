@@ -30,7 +30,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.example.cupcake.data.DataSource.quantityOptions
 import com.example.cupcake.ui.OrderViewModel
+import com.example.cupcake.ui.StartOrderScreen
 
 /**
  * ENUM Class for the cupcake screen
@@ -71,7 +77,7 @@ fun CupcakeAppBar(
 
 @Composable
 fun CupcakeApp(modifier: Modifier = Modifier, viewModel: OrderViewModel = viewModel()){
-    // TODO: Create NavController
+    val navController: NavHostController = rememberNavController()
 
     // TODO: Get current back stack entry
 
@@ -85,8 +91,21 @@ fun CupcakeApp(modifier: Modifier = Modifier, viewModel: OrderViewModel = viewMo
             )
         }
     ) {
-        padding -> Column(
-        modifier = Modifier.padding(padding)) {}
+        padding ->
+        val uiState by viewModel.uiState.collectAsState()
+        NavHost(
+            navController = navController,
+            startDestination = CupcakeScreen.Start.name,
+            modifier = modifier.padding(padding)
+        ) {
+            // ROUTE: start
+            composable(route = CupcakeScreen.Start.name) {
+                StartOrderScreen(
+                    quantityOptions = quantityOptions,
+                    onNextButtonClicked = {}
+                )
+            }
+        }
     }
 }
 
