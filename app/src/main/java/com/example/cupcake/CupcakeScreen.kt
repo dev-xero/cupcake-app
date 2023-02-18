@@ -133,13 +133,16 @@ fun CupcakeApp(modifier: Modifier = Modifier, viewModel: OrderViewModel = viewMo
 
             // ROUTE: pickup date
             composable(route = CupcakeScreen.Flavor.name) {
-                val context = LocalContext.current
                 SelectOptionScreen(
                     subtotal = uiState.price,
                     options = uiState.pickupOptions,
                     onSelectionChanged = {
                         viewModel.setDate(it)
-                    }
+                    },
+                    onNextButtonClicked = {
+                        navController.navigate(CupcakeScreen.Summary.name)
+                    },
+                    onCancelButtonClicked = {}
                 )
             }
 
@@ -147,8 +150,10 @@ fun CupcakeApp(modifier: Modifier = Modifier, viewModel: OrderViewModel = viewMo
             composable(route = CupcakeScreen.Summary.name) {
                 OrderSummaryScreen(
                     orderUiState = uiState,
-                    onCancelButtonClicked = { /*TODO*/ },
-                    onSendButtonClicked = {}
+                    onCancelButtonClicked = {},
+                    onSendButtonClicked = {
+                        subject: String, summary: String ->
+                    }
                 )
             }
         }
