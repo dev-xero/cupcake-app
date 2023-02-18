@@ -37,6 +37,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.cupcake.data.DataSource.flavors
 import com.example.cupcake.data.DataSource.quantityOptions
+import com.example.cupcake.ui.OrderSummaryScreen
 import com.example.cupcake.ui.OrderViewModel
 import com.example.cupcake.ui.SelectOptionScreen
 import com.example.cupcake.ui.StartOrderScreen
@@ -132,6 +133,15 @@ fun CupcakeApp(modifier: Modifier = Modifier, viewModel: OrderViewModel = viewMo
                     onSelectionChanged = {
                         viewModel.setDate(it)
                     }
+                )
+            }
+
+            // ROUTE: summary
+            composable(route = CupcakeScreen.Summary.name) {
+                OrderSummaryScreen(
+                    orderUiState = uiState,
+                    onCancelButtonClicked = { /*TODO*/ },
+                    onSendButtonClicked = {}
                 )
             }
         }
