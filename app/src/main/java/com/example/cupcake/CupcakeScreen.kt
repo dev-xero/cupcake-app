@@ -106,7 +106,10 @@ fun CupcakeApp(modifier: Modifier = Modifier, viewModel: OrderViewModel = viewMo
             composable(route = CupcakeScreen.Start.name) {
                 StartOrderScreen(
                     quantityOptions = quantityOptions,
-                    onNextButtonClicked = {}
+                    onNextButtonClicked = {
+                        viewModel.setQuantity(it)
+                        navController.navigate(CupcakeScreen.Flavor.name)
+                    }
                 )
             }
 
