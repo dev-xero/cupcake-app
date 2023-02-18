@@ -121,6 +121,10 @@ fun CupcakeApp(modifier: Modifier = Modifier, viewModel: OrderViewModel = viewMo
                     options = flavors.map {
                         id -> context.resources.getString(id)
                     },
+                    onNextButtonClicked = {
+                      navController.navigate(CupcakeScreen.Pickup.name)
+                    },
+                    onCancelButtonClicked = {},
                     onSelectionChanged = {
                         viewModel.setFlavor(it)
                     }
