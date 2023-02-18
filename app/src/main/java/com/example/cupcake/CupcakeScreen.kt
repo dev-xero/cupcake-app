@@ -31,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -122,9 +123,13 @@ fun CupcakeApp(modifier: Modifier = Modifier, viewModel: OrderViewModel = viewMo
                         id -> context.resources.getString(id)
                     },
                     onNextButtonClicked = {
-                      navController.navigate(CupcakeScreen.Pickup.name)
+                        navController.navigate(CupcakeScreen.Pickup.name)
                     },
-                    onCancelButtonClicked = {},
+                    onCancelButtonClicked = {
+                        cancelOrderAndNavigateToStart(
+                            viewModel, navController
+                        )
+                    },
                     onSelectionChanged = {
                         viewModel.setFlavor(it)
                     }
@@ -142,7 +147,11 @@ fun CupcakeApp(modifier: Modifier = Modifier, viewModel: OrderViewModel = viewMo
                     onNextButtonClicked = {
                         navController.navigate(CupcakeScreen.Summary.name)
                     },
-                    onCancelButtonClicked = {}
+                    onCancelButtonClicked = {
+                        cancelOrderAndNavigateToStart(
+                            viewModel, navController
+                        )
+                    }
                 )
             }
 
@@ -150,7 +159,11 @@ fun CupcakeApp(modifier: Modifier = Modifier, viewModel: OrderViewModel = viewMo
             composable(route = CupcakeScreen.Summary.name) {
                 OrderSummaryScreen(
                     orderUiState = uiState,
-                    onCancelButtonClicked = {},
+                    onCancelButtonClicked = {
+                        cancelOrderAndNavigateToStart(
+                            viewModel, navController
+                        )
+                    },
                     onSendButtonClicked = {
                         subject: String, summary: String ->
                     }
@@ -158,5 +171,13 @@ fun CupcakeApp(modifier: Modifier = Modifier, viewModel: OrderViewModel = viewMo
             }
         }
     }
+}
+
+private fun cancelOrderAndNavigateToStart(
+    viewModel: OrderViewModel,
+    navController: NavController
+) {
+    viewModel.resetOrder()
+    navController.popBackStack(CupcakeScreen.Start.name, inclusive = false)
 }
 
