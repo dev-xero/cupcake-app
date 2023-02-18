@@ -33,6 +33,18 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.cupcake.ui.OrderViewModel
 
 /**
+ * ENUM Class for the cupcake screen
+ * */
+
+enum class CupcakeScreen {
+    Start,
+    Flavor,
+    Pickup,
+    Summary
+}
+
+
+/**
  * Composable that displays the topBar and displays back button if back navigation is possible.
  */
 @Composable
